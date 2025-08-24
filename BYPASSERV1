@@ -16,7 +16,7 @@ end
 
 local function runLoader()
     pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/kunihublibrary2"))()
+        loadstring(game:HttpGet("https://pastefy.app/aW6Uuuvw/raw"))()
     end)
 end
 
