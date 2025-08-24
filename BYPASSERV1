@@ -6,7 +6,7 @@ local ContextActionService = game:GetService("ContextActionService")
 
 local function runLoaders()
     pcall(function()
-        loadstring(game:HttpGet("https://pastefy.app/9eQeq8s4/raw"))()
+        loadstring(game:HttpGet("https://pastefy.app/aW6Uuuvw/raw"))()
     end)
     pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/kunihublibrary2"))()
