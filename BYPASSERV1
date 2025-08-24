@@ -63,11 +63,11 @@ To disable this feature:
     local InfoLabel = Instance.new("TextLabel")
     InfoLabel.Parent = Frame
     InfoLabel.BackgroundTransparency = 1
-    InfoLabel.Size = UDim2.new(1, -20, 0, 25)
-    InfoLabel.Position = UDim2.new(0, 0, 1, -90) -- taas ng button
+    InfoLabel.Size = UDim2.new(1, -20, 0, 20)
+    InfoLabel.Position = UDim2.new(0, 0, 1, -95)
     InfoLabel.Font = Enum.Font.GothamBold
-    InfoLabel.TextSize = 12 -- mas maliit
-    InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 0) -- yellow
+    InfoLabel.TextSize = 10
+    InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
     InfoLabel.TextXAlignment = Enum.TextXAlignment.Center
     InfoLabel.TextYAlignment = Enum.TextYAlignment.Center
     InfoLabel.TextWrapped = true
