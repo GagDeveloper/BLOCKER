@@ -1,0 +1,99 @@
+-- 🛡️ Auto Detect Delta Anti-Scam + Freeze Game + Rejoin Button Only
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+-- Detect Anti-Scam by testing a blocked function
+local function isAntiScamOn()
+    local success = pcall(function()
+        TeleportService:Teleport(123456789, Players.LocalPlayer)
+    end)
+    return not success
+end
+
+-- UI Prompt (only rejoin button)
+local function showPrompt()
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "AntiScamPrompt"
+    local Frame = Instance.new("Frame")
+    local RejoinButton = Instance.new("TextButton")
+    local UICorner = Instance.new("UICorner")
+    local BtnCorner = Instance.new("UICorner")
+
+    ScreenGui.Parent = game:GetService("CoreGui")
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    Frame.Parent = ScreenGui
+    Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Frame.Size = UDim2.new(0, 250, 0, 120)
+    Frame.Position = UDim2.new(0.5, -125, 0.5, -60)
+
+    UICorner.CornerRadius = UDim.new(0, 12)
+    UICorner.Parent = Frame
+
+    -- Rejoin button
+    RejoinButton.Parent = Frame
+    RejoinButton.Size = UDim2.new(0.8, 0, 0.5, 0)
+    RejoinButton.Position = UDim2.new(0.1, 0, 0.25, 0)
+    RejoinButton.BackgroundColor3 = Color3.fromRGB(50, 150, 255)
+    RejoinButton.Text = "🔄 Rejoin Game"
+    RejoinButton.Font = Enum.Font.GothamBold
+    RejoinButton.TextSize = 18
+    RejoinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    BtnCorner.CornerRadius = UDim.new(0, 8)
+    BtnCorner.Parent = RejoinButton
+
+    -- Rejoin action
+    RejoinButton.MouseButton1Click:Connect(function()
+        TeleportService:Teleport(game.PlaceId, Players.LocalPlayer)
+    end)
+end
+
+-- Freeze system (disable controls + slow game loop)
+local freezeConnection
+local inputBlock
+
+local function freezeGame(enable)
+    if enable then
+        if not freezeConnection then
+            freezeConnection = RunService.Heartbeat:Connect(function()
+                task.wait(1) -- slows down everything
+            end)
+        end
+        if not inputBlock then
+            inputBlock = UserInputService.InputBegan:Connect(function(input, gp)
+                if not gp then
+                    return Enum.ContextActionResult.Sink
+                end
+            end)
+        end
+    else
+        if freezeConnection then
+            freezeConnection:Disconnect()
+            freezeConnection = nil
+        end
+        if inputBlock then
+            inputBlock:Disconnect()
+            inputBlock = nil
+        end
+    end
+end
+
+-- 🔍 Check every 5s if Anti-Scam is ON
+task.spawn(function()
+    while true do
+        task.wait(5)
+        if isAntiScamOn() then
+            if not game:GetService("CoreGui"):FindFirstChild("AntiScamPrompt") then
+                showPrompt()
+            end
+            freezeGame(true) -- freeze ON
+        else
+            local gui = game:GetService("CoreGui"):FindFirstChild("AntiScamPrompt")
+            if gui then gui:Destroy() end
+            freezeGame(false) -- freeze OFF
+        end
+    end
+end)
